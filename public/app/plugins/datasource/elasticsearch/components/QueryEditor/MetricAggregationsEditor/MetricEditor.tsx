@@ -39,6 +39,8 @@ interface Props {
 // This means we should filter them out from the type picker if there's no other "basic" aggregation before the current one.
 const isBasicAggregation = (metric: MetricAggregation) => !metricAggregationConfig[metric.type].isPipelineAgg;
 
+const hiddenMetricTypes = new Set(['logs', 'raw_document', 'raw_data']);
+
 const getTypeOptions = (
   previousMetrics: MetricAggregation[],
   esVersion: SemVer | null
@@ -48,6 +50,7 @@ const getTypeOptions = (
 
   return (
     Object.entries(metricAggregationConfig)
+      .filter(([key, _]) => !hiddenMetricTypes.has(key))
       // Only showing metrics type supported by the version of ES.
       // if we cannot determine the version, we assume it is suitable.
       .filter(([_, { versionRange = '*' }]) => (esVersion != null ? satisfies(esVersion, versionRange) : true))

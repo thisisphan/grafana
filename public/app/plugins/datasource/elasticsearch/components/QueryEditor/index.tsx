@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { SemVer } from 'semver';
 
 import { getDefaultTimeRange, GrafanaTheme2, QueryEditorProps } from '@grafana/data';
-import { Alert, InlineField, InlineLabel, Input, QueryField, useStyles2 } from '@grafana/ui';
+import { Alert, InlineField, InlineLabel, Input, QueryField, RadioButtonGroup, useStyles2 } from '@grafana/ui';
 
 import { ElasticDatasource } from '../../datasource';
 import { useNextId } from '../../hooks/useNextId';
@@ -15,6 +15,7 @@ import { BucketAggregationsEditor } from './BucketAggregationsEditor';
 import { ElasticsearchProvider } from './ElasticsearchQueryContext';
 import { MetricAggregationsEditor } from './MetricAggregationsEditor';
 import { metricAggregationConfig } from './MetricAggregationsEditor/utils';
+import { ModeSelector } from './ModeSelector';
 import { changeAliasPattern, changeQuery } from './state';
 
 export type ElasticQueryEditorProps = QueryEditorProps<ElasticDatasource, ElasticsearchQuery, ElasticsearchOptions>;
@@ -108,6 +109,10 @@ const QueryEditorForm = ({ value }: Props) => {
 
   return (
     <>
+      <div className={styles.root}>
+        <InlineLabel width={17}>Query type</InlineLabel>
+        <ModeSelector />
+      </div>
       <div className={styles.root}>
         <InlineLabel width={17}>Query</InlineLabel>
         <ElasticSearchQueryField onChange={(query) => dispatch(changeQuery(query))} value={value?.query} />
