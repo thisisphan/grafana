@@ -13,14 +13,14 @@ export function feedToDataFrame(feed: Feed): DataFrame {
     const val = dateTime(item.pubDate);
 
     try {
-      date.buffer.push(val.valueOf());
-      title.buffer.push(item.title);
-      link.buffer.push(item.link);
-      ogImage.buffer.push(item.ogImage);
+      date.push(val.valueOf());
+      title.push(item.title);
+      link.push(item.link);
+      ogImage.push(item.ogImage);
 
       if (item.content) {
         const body = item.content.replace(/<\/?[^>]+(>|$)/g, '');
-        content.buffer.push(body);
+        content.push(body);
       }
     } catch (err) {
       console.warn('Error reading news item:', err, item);

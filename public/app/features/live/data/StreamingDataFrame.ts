@@ -150,7 +150,7 @@ export class StreamingDataFrame implements DataFrame {
     }));
 
     assureValuesAreWithinLengthLimit(
-      this.fields.map((f) => f.values.buffer),
+      this.fields.map((f) => f.values),
       this.options.maxLength,
       this.timeFieldIndex,
       this.options.maxDelta
@@ -336,13 +336,13 @@ export class StreamingDataFrame implements DataFrame {
         this.packetInfo.action = StreamingFrameAction.Append;
 
         // mutates appended
-        appended = this.fields.map((f) => f.values.buffer);
+        appended = this.fields.map((f) => f.values);
         circPush(appended, values, this.options.maxLength, this.timeFieldIndex, this.options.maxDelta);
       }
 
       appended.forEach((v, i) => {
-        const { state, values } = this.fields[i];
-        values.buffer = v;
+        const f = this.fields[i];
+        f.values = v;
         if (state) {
           state.calcs = undefined;
         }
@@ -412,8 +412,7 @@ export class StreamingDataFrame implements DataFrame {
 
   getValuesFromLastPacket = (): unknown[][] =>
     this.fields.map((f) => {
-      const values = f.values.buffer;
-      return values.slice(Math.max(values.length - this.packetInfo.length));
+      return f.values.slice(Math.max(f.values.length - this.packetInfo.length));
     });
 
   hasAtLeastOnePacket = () => Boolean(this.packetInfo.length);

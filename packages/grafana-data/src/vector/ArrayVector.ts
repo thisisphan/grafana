@@ -1,43 +1,44 @@
 import { MutableVector } from '../types/vector';
 
-import { FunctionalVector } from './FunctionalVector';
-
 /**
  * @public
  */
-export class ArrayVector<T = any> extends FunctionalVector<T> implements MutableVector<T> {
-  buffer: T[];
-
+export class ArrayVector<T = any> extends Array<T> implements MutableVector<T> {
   constructor(buffer?: T[]) {
     super();
-    this.buffer = buffer ? buffer : [];
+    if (buffer?.length) {
+      this.push(...buffer);
+    }
   }
 
-  get length() {
-    return this.buffer.length;
-  }
+  // /** @deprecated -- not necessary anymore */
+  // get buffer() {
+  //   return this;
+  // }
+
+  // /** @deprecated -- not necessary anymore */
+  // set buffer(v: T[]) {
+  //   this.length = 0;
+  //   this.push(...v);
+  // }
 
   add(value: T) {
-    this.buffer.push(value);
+    this.push(value);
   }
 
   get(index: number): T {
-    return this.buffer[index];
+    return this[index];
   }
 
   set(index: number, value: T) {
-    this.buffer[index] = value;
-  }
-
-  reverse() {
-    this.buffer.reverse();
+    this[index] = value;
   }
 
   toArray(): T[] {
-    return this.buffer;
+    return this;
   }
 
   toJSON(): T[] {
-    return this.buffer;
+    return this;
   }
 }
