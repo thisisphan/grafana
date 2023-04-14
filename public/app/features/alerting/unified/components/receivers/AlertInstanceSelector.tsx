@@ -71,6 +71,7 @@ export function AlertInstanceSelector({ onSelect }: { onSelect: (payload: string
         isClearable={true}
         backspaceRemovesValue={true}
         onChange={handleSelectedInstance}
+        virtualized={true}
         options={options}
         maxMenuHeight={500}
         placeholder={'Select alert instaces to add to your payload'}
