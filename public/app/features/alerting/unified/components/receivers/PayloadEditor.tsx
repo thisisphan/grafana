@@ -6,6 +6,7 @@ import { Button, LoadingPlaceholder, TextArea, useStyles2 } from '@grafana/ui';
 
 import { useDefaultPayloadQuery } from '../../api/templateApi';
 
+import { AlertInstanceSelector } from './AlertInstanceSelector';
 export const NO_DEFAULT_PAYLOAD = 'No default payload found';
 export const RESET_TO_DEFAULT = 'Reset to default payload';
 
@@ -35,10 +36,15 @@ export function PayloadEditor({
     return <LoadingPlaceholder text={'Loading default payload'} />;
   }
 
+  const handleSelectedAlertInstances = (payload: string) => {
+    setPayload(payload);
+  };
+
   return (
     <Stack direction="row" alignItems="center">
       <div>
         <Stack direction="column" gap={1}>
+          <AlertInstanceSelector onSelect={handleSelectedAlertInstances} />
           <h5> Payload</h5>
           <TextArea
             required={true}
