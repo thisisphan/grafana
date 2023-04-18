@@ -9,17 +9,10 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Actions
-        uses: actions/checkout@v3
-        with:
-          repository: "grafana/grafana-github-actions"
-          path: ./actions
-          ref: main
-      - name: Install Actions
-        run: npm install --production --prefix ./actions
       - name: Run update changelog (manually invoked)        
-        uses: ./actions/update-changelog
+        uses: grafana/grafana-github-actions-go/update-changelog@main
         with:
-          token: ${{ secrets.GH_BOT_ACCESS_TOKEN }}
-          metricsWriteAPIKey: ${{ secrets.GRAFANA_MISC_STATS_API_KEY }}
-          grafanabotForumKey: ${{ secrets.GRAFANABOT_FORUM_KEY }}
+          token: ${{ secrets.GRAFANABOT_PAT }}
+          version: ${{ inputs.version }}
+          metrics_api_key: ${{ secrets.GRAFANA_MISC_STATS_API_KEY }}
+          forum_key: ${{ secrets.GRAFANABOT_FORUM_KEY }}
