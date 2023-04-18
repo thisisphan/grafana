@@ -9,6 +9,7 @@ import react from 'react';
 import reactDom from 'react-dom';
 import * as reactRedux from 'react-redux'; // eslint-disable-line no-restricted-imports
 import * as reactRouter from 'react-router-dom';
+import * as reactRouterCompat from 'react-router-dom-v5-compat';
 import * as redux from 'redux';
 import * as rxjs from 'rxjs';
 import * as rxjsOperators from 'rxjs/operators';
@@ -98,7 +99,12 @@ exposeToPlugin('jquery', jquery);
 exposeToPlugin('d3', d3);
 exposeToPlugin('rxjs', rxjs);
 exposeToPlugin('rxjs/operators', rxjsOperators);
-exposeToPlugin('react-router-dom', reactRouter);
+exposeToPlugin('react-router-dom', {
+  ...reactRouter,
+  ...reactRouterCompat,
+  Route: reactRouterCompat.CompatRoute,
+  Router: reactRouterCompat.CompatRouter,
+});
 
 // Experimental modules
 exposeToPlugin('prismjs', prismjs);
