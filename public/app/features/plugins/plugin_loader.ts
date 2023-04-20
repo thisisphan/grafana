@@ -8,7 +8,7 @@ import prismjs from 'prismjs';
 import react from 'react';
 import reactDom from 'react-dom';
 import * as reactRedux from 'react-redux'; // eslint-disable-line no-restricted-imports
-import * as reactRouter from 'react-router-dom';
+import * as reactRouterDom from 'react-router-dom';
 import * as reactRouterCompat from 'react-router-dom-v5-compat';
 import * as redux from 'redux';
 import * as rxjs from 'rxjs';
@@ -99,12 +99,8 @@ exposeToPlugin('jquery', jquery);
 exposeToPlugin('d3', d3);
 exposeToPlugin('rxjs', rxjs);
 exposeToPlugin('rxjs/operators', rxjsOperators);
-exposeToPlugin('react-router-dom', {
-  ...reactRouter,
-  ...reactRouterCompat,
-  Route: reactRouterCompat.CompatRoute,
-  Router: reactRouterCompat.CompatRouter,
-});
+exposeToPlugin('react-router', reactRouterCompat);
+exposeToPlugin('react-router-dom', reactRouterDom);
 
 // Experimental modules
 exposeToPlugin('prismjs', prismjs);
