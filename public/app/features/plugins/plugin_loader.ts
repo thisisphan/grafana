@@ -99,6 +99,15 @@ exposeToPlugin('jquery', jquery);
 exposeToPlugin('d3', d3);
 exposeToPlugin('rxjs', rxjs);
 exposeToPlugin('rxjs/operators', rxjsOperators);
+// This is the trick.
+// ==================
+// Plugins that still use "react-router-dom@v5" don't depend on react-router directly, so they will not use this import.
+// (The react-router-dom@v5 that we expose for them depends on the core react-router package internally.)
+//
+// Plugins that would like to use "react-router-dom@v6" will need to bundle "react-router-dom",
+// however they cannot bundle react-router - that would mean we have two instances of react-router
+// in the app, which would break it. As "react-router-dom-v5-compat" re-exports everything from "react-router-dom@v6",
+// which re-exports everything from "react-router@v6", we can expose a compatible v6 version of the router to plugins.
 exposeToPlugin('react-router', reactRouterCompat);
 exposeToPlugin('react-router-dom', reactRouterDom);
 
