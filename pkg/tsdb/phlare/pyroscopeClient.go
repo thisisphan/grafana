@@ -70,11 +70,12 @@ type PyroFlamebearer struct {
 	Names    []string  `json:"names"`
 }
 
-func (c *PyroscopeClient) GetProfile(ctx context.Context, profileTypeID string, labelSelector string, start int64, end int64) (*ProfileResponse, error) {
+func (c *PyroscopeClient) GetProfile(ctx context.Context, profileTypeID, labelSelector string, start, end, maxNodes int64) (*ProfileResponse, error) {
 	params := url.Values{}
 	params.Add("from", strconv.FormatInt(start, 10))
 	params.Add("until", strconv.FormatInt(end, 10))
 	params.Add("query", profileTypeID+labelSelector)
+	params.Add("maxNodes", strconv.FormatInt(maxNodes, 10))
 	params.Add("format", "json")
 
 	url := c.URL + "/render?" + params.Encode()
