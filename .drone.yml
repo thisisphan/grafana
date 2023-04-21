@@ -4547,6 +4547,107 @@ volumes:
   name: docker
 ---
 clone:
+  retries: 3
+depends_on: []
+image_pull_secrets:
+- dockerconfigjson
+kind: pipeline
+name: rgm-main-build
+node:
+  type: no-parallel
+platform:
+  arch: amd64
+  os: linux
+services: []
+steps:
+- commands:
+  - git clone https://github.com/grafana/grafana-build.git rgm
+  failure: ignore
+  image: alpine/git
+  name: clone-rgm
+- commands:
+  - apk update && apk add docker
+  - export GRAFANA_DIR=$$(pwd)
+  - cd rgm && go run ./cmd --build-id=$${DRONE_BUILD_ID} --grafana-dir=$${GRAFANA_DIR}
+    --github-token=${GITHUB_TOKEN} package --distro=linux/amd64 publish --destination=$${DESTINATION}
+    --gcp-service-account-key-base64=$${GCP_KEY_BASE64}
+  environment:
+    DESTINATION:
+      from_secret: destination
+    GCP_KEY_BASE64:
+      from_secret: gcp_key_base64
+    GITHUB_TOKEN:
+      from_secret: github_token
+  failure: ignore
+  image: golang:1.20.3-alpine
+  name: rgm-build
+  volumes:
+  - name: docker
+    path: /var/run/docker.sock
+trigger:
+  branch: add-rgm-to-drone
+  event:
+  - push
+type: docker
+volumes:
+- host:
+    path: /var/run/docker.sock
+  name: docker
+---
+clone:
+  retries: 3
+depends_on: []
+image_pull_secrets:
+- dockerconfigjson
+kind: pipeline
+name: rgm-tag-build
+node:
+  type: no-parallel
+platform:
+  arch: amd64
+  os: linux
+services: []
+steps:
+- commands:
+  - git clone https://github.com/grafana/grafana-build.git rgm
+  failure: ignore
+  image: alpine/git
+  name: clone-rgm
+- commands:
+  - apk update && apk add docker
+  - export GRAFANA_DIR=$$(pwd)
+  - cd rgm && go run ./cmd --build-id=$${DRONE_BUILD_ID} --grafana-dir=$${GRAFANA_DIR}
+    --github-token=${GITHUB_TOKEN} package --distro=linux/amd64 publish --destination=$${DESTINATION}
+    --gcp-service-account-key-base64=$${GCP_KEY_BASE64}
+  environment:
+    DESTINATION:
+      from_secret: destination
+    GCP_KEY_BASE64:
+      from_secret: gcp_key_base64
+    GITHUB_TOKEN:
+      from_secret: github_token
+  failure: ignore
+  image: golang:1.20.3-alpine
+  name: rgm-build
+  volumes:
+  - name: docker
+    path: /var/run/docker.sock
+trigger:
+  event:
+    exclude:
+    - promote
+  ref:
+    exclude:
+    - refs/tags/*-cloud*
+    include:
+    - refs/tags/v*
+type: docker
+volumes:
+- host:
+    path: /var/run/docker.sock
+  name: docker
+---
+clone:
   disable: true
 depends_on: []
 environment:
@@ -6822,7 +6923,25 @@ get:
 kind: secret
 name: enterprise2_security_prefix
 ---
+get:
+  name: gcp_service_account_base64
+  path: infra/data/ci/grafana-release-eng/rgm
+kind: secret
+name: gcp_key_base64
+---
+get:
+  name: destination
+  path: infra/data/ci/grafana-release-eng/rgm
+kind: secret
+name: destination
+---
+get:
+  name: pat
+  path: infra/data/ci/github/grafanabot
+kind: secret
+name: github_token
+---
 kind: signature
-hmac: e8c29c328c07ab24a7f858cc319c9b35a5bec1fc79531e809e5d3a390bbcbc2f
+hmac: c391c5bfb1e9cc8f7082b4fce102d6476b56396e330ecd110c57a696737e4ab7
 
 ...
